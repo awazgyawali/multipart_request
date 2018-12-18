@@ -19,10 +19,10 @@ public class MultipartRequest {
 
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
 
-    public void sendMultipartRequest(String url,Map<String, String> headers, Map<String, String> fields, ArrayList<Object> files, ProgressRequestBody.Listener listener) throws Exception {
+    public void sendMultipartRequest(String url, Map<String, String> headers, Map<String, String> fields, ArrayList<Object> files, ProgressRequestBody.Listener listener) throws Exception {
         OkHttpClient client = new OkHttpClient();
 
-        MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder();
+        MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
         requestBodyBuilder = fullfillFields(requestBodyBuilder, fields);
 
@@ -60,23 +60,22 @@ public class MultipartRequest {
 
     private MultipartBody.Builder fullfillFields(MultipartBody.Builder bodyBuilder, Map<String, String> fields) {
         for (Map.Entry<String, String> entry : fields.entrySet()) {
-            Log.d("Multipart", "Field " + entry.getKey() + " has value " + entry.getValue());
-            bodyBuilder.addPart(
-                    Headers.of("Content-Disposition", "form-data; name=\"" + entry.getKey() + "\""),
-                    RequestBody.create(null, entry.getValue()));
+            bodyBuilder.addFormDataPart(
+                    entry.getKey(), entry.getValue());
         }
         return bodyBuilder;
     }
 
     private MultipartBody.Builder fullfillFiles(MultipartBody.Builder bodyBuilder, ArrayList<Object> files) {
-        for (int i = 0; i<files.size();i++){
+        for (int i = 0; i < files.size(); i++) {
 
-            Map<String, String> file =(Map<String, String>) files.get(i);
+            Map<String, String> file = (Map<String, String>) files.get(i);
             Log.d("Multipart", "File " + file.get("field") + " has value " + file.get("path"));
 
-            bodyBuilder.addPart(
-                    Headers.of("Content-Disposition", "form-data; name=\""+file.get("field")+"\""),
-                    RequestBody.create(null, new File(file.get("path"))));
+            String[] names = file.get("path").split("/");
+            bodyBuilder.addFormDataPart(
+                    file.get("field"), names[names.length-1],RequestBody.create(null, new File(file.get("path"))));
+
 
         }
         return bodyBuilder;
