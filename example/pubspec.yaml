@@ -1,0 +1,21 @@
+name: multipart_request_example
+description: Demonstrates how to use the multipart_request plugin.
+publish_to: 'none'
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  image_picker:
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  multipart_request:
+    path: ../
+
+flutter:
+  uses-material-design: true
