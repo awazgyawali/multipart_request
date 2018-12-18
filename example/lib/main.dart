@@ -50,6 +50,7 @@ class _MyAppState extends State<MyApp> {
   void sendRequest() {
     var request = MultipartRequest();
 
+    request.setUrl("https://b804ca15.ngrok.io/images");
     request.addFile("image", imagePath);
 
     Response response = request.send();
