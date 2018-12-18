@@ -3,48 +3,42 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class MultipartRequest {
-  static const MethodChannel _channel =
-      const MethodChannel('multipart_progress');
+  static const MethodChannel _channel = const MethodChannel('multipart_report');
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-
-  String url;
-  var headers = {}, fields = {};
-  var files = [];
+  String _url;
+  var _headers = {}, _fields = {};
+  var _files = [];
 
   setUrl(String url) {
-    this.url = url;
+    this._url = url;
   }
 
   addHeader(key, value) {
-    headers[key] = value;
+    _headers[key] = value;
   }
 
   addHeaders(Map<String, String> headers) {
-    this.headers.addAll(headers);
+    this._headers.addAll(headers);
   }
 
   addField(key, value) {
-    fields[key] = value;
+    _fields[key] = value;
   }
 
   addFields(Map<String, String> fields) {
-    this.fields.addAll(fields);
+    this._fields.addAll(fields);
   }
 
   addFile(key, path) {
-    files.add({"field": key, "path": path});
+    _files.add({"field": key, "path": path});
   }
 
   Response send() {
     var finalBlock = {
-      "url": url,
-      "headers": headers,
-      "fields": fields,
-      "files": files,
+      "url": _url,
+      "headers": _headers,
+      "fields": _fields,
+      "files": _files,
     };
 
     _channel.invokeMethod('multipartRequest', finalBlock);

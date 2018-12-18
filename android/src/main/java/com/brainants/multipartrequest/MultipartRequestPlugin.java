@@ -17,8 +17,8 @@ public class MultipartRequestPlugin implements MethodCallHandler {
     static MethodChannel channel;
 
     public static void registerWith(Registrar registrar) {
-        channel = new MethodChannel(registrar.messenger(), "multipart_progress");
-        channel.setMethodCallHandler(new MultipatProgressPlugin());
+        channel = new MethodChannel(registrar.messenger(), "multipart_request");
+        channel.setMethodCallHandler(new MultipartRequestPlugin());
     }
 
     @SuppressLint("StaticFieldLeak")
