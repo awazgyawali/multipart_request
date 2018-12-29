@@ -24,9 +24,7 @@ public class MultipartRequestPlugin implements MethodCallHandler {
     @SuppressLint("StaticFieldLeak")
     @Override
     public void onMethodCall(MethodCall call, final Result result) {
-        if (call.method.equals("getPlatformVersion")) {
-            result.success("Android " + android.os.Build.VERSION.RELEASE);
-        } else if (call.method.equals("multipartRequest")) {
+       if (call.method.equals("multipartRequest")) {
             final Map<String, Object> arguments = call.arguments();
             final String url = (String) arguments.get("url");
             final Map<String, String> headers = (Map<String, String>) arguments.get("headers");

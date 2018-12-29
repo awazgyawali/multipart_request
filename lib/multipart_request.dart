@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class MultipartRequest {
-  static const MethodChannel _channel = const MethodChannel('multipart_report');
+  static const MethodChannel _channel =
+      const MethodChannel('multipart_request');
 
   String _url;
   var _headers = {}, _fields = {};
