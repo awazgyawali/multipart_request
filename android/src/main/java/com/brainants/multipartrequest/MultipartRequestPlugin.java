@@ -1,6 +1,7 @@
 package com.brainants.multipartrequest;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
@@ -15,16 +16,19 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 public class MultipartRequestPlugin implements MethodCallHandler {
     static MethodChannel channel;
+    Activity activity;
 
     public static void registerWith(Registrar registrar) {
         channel = new MethodChannel(registrar.messenger(), "multipart_request");
-        channel.setMethodCallHandler(new MultipartRequestPlugin());
+        MultipartRequestPlugin multipartRequestPlugin = new MultipartRequestPlugin();
+        multipartRequestPlugin.activity = registrar.activity();
+        channel.setMethodCallHandler(multipartRequestPlugin);
     }
 
     @SuppressLint("StaticFieldLeak")
     @Override
     public void onMethodCall(MethodCall call, final Result result) {
-       if (call.method.equals("multipartRequest")) {
+        if (call.method.equals("multipartRequest")) {
             final Map<String, Object> arguments = call.arguments();
             final String url = (String) arguments.get("url");
             final Map<String, String> headers = (Map<String, String>) arguments.get("headers");
@@ -38,24 +42,43 @@ public class MultipartRequestPlugin implements MethodCallHandler {
                     try {
                         new MultipartRequest().sendMultipartRequest(url, headers, fields, files, new ProgressRequestBody.Listener() {
                             @Override
-                            public void onProgress(int progress) {
-                                channel.invokeMethod("progress", progress + "");
+                            public void onProgress(final int progress) {
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        channel.invokeMethod("progress", progress + "");
+                                    }
+                                });
                             }
 
                             @Override
-                            public void onComplete(String response) {
-                                channel.invokeMethod("complete", response);
-
+                            public void onComplete(final String response) {
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        channel.invokeMethod("complete", response);
+                                    }
+                                });
                             }
 
                             @Override
                             public void onError() {
-                                channel.invokeMethod("error", "");
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        channel.invokeMethod("error", "");
+                                    }
+                                });
                             }
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
-                        channel.invokeMethod("error", "");
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                channel.invokeMethod("error", "");
+                            }
+                        });
                     }
                     return null;
                 }
