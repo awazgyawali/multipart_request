@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Support for iOS
+
 ## 0.2.0
 
 - n core code on UI thread
