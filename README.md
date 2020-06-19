@@ -1,7 +1,7 @@
 # multipart_request
 
 A flutter plugin to send a multipart request and gt progress event.
-Only runs on android and uses OkHttp.
+Works on both Android and iOS
 
 ## Example
     var request = MultipartRequest();
