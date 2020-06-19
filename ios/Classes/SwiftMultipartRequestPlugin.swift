@@ -5,7 +5,6 @@ import UIKit
 public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
     static var channel: FlutterMethodChannel?
 
-
     public static func register(with registrar: FlutterPluginRegistrar) {
         channel = FlutterMethodChannel(name: "multipart_request", binaryMessenger: registrar.messenger())
         let instance = SwiftMultipartRequestPlugin()
@@ -26,7 +25,7 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
                 uploadFile(files: files, url: url, headers: headers, fields: fields, result: result)
             }
         default:
-            result(FlutterMethodNotImplemented);
+            result(FlutterMethodNotImplemented)
         }
     }
 
@@ -53,11 +52,10 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
     fileprivate func onSuccess(_ response: DataResponse<Any>) {
         if let data = response.data {
             let json = String(data: data, encoding: String.Encoding.utf8)
-            print(json)
             SwiftMultipartRequestPlugin.channel?.invokeMethod("complete", arguments: json)
         }
     }
-    
+
     private func uploadFile(files: [[String: String]], url: String, headers: [String: String], fields: [String: String], result _: @escaping FlutterResult) {
         Alamofire.upload(multipartFormData: { multipartFormData in
             self.fillFiles(multipartFormData, files: files)
@@ -72,17 +70,15 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
                     self.onSuccess(response)
                 }
                 upload.uploadProgress(closure: { progress in
-                    print(progress.fractionCompleted)
-                    let percents = Int(round(progress.fractionCompleted * 100));
-                    print(percents);
+                    let percents = Int(round(progress.fractionCompleted * 100))
                     SwiftMultipartRequestPlugin.channel?.invokeMethod("progress", arguments: String(percents))
-                       })
+                })
             case .success(request: let upload, streamingFromDisk: true, streamFileURL: let streamFileURL):
                 upload.validate()
                 upload.responseJSON { response in
                     self.onSuccess(response)
                 }
             }
-               })
+        })
     }
 }
