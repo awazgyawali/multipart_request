@@ -1,6 +1,6 @@
 # multipart_request
 
-A flutter plugin to send a multipart request and gt progress event.
+A flutter plugin to send a multipart request with get progress event.
 Works on both Android and iOS
 
 ## Example
