@@ -1,6 +1,6 @@
 name: multipart_request
 description: A flutter plugin to send a multipart request and get stream of progress.
-version: 0.3.0
+version: 0.3.1
 homepage: https://github.com/awazgyawali/multipart_request
 
 environment:
