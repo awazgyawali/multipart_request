@@ -9,6 +9,15 @@ class MultipartRequest {
   String _url;
   var _headers = {}, _fields = {};
   var _files = [];
+  String _method = "POST"; //POST or PUT
+
+  setMethodPost() {
+    this._method = "POST";
+  }
+
+  setMethodPut() {
+    this._method = "PUT";
+  }
 
   setUrl(String url) {
     this._url = url;
@@ -40,6 +49,7 @@ class MultipartRequest {
       "headers": _headers,
       "fields": _fields,
       "files": _files,
+      "method": _method,
     };
 
     _channel.invokeMethod('multipartRequest', finalBlock);
@@ -66,6 +76,7 @@ class MultipartRequest {
           break;
         default:
       }
+      return; //kai added
     });
 
     return response;

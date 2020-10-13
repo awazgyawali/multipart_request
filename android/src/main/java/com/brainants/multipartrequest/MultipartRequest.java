@@ -19,7 +19,7 @@ public class MultipartRequest {
 
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
 
-    public void sendMultipartRequest(String url, Map<String, String> headers, Map<String, String> fields, ArrayList<Object> files, ProgressRequestBody.Listener listener) throws Exception {
+    public void sendMultipartRequest(String url, String method, Map<String, String> headers, Map<String, String> fields, ArrayList<Object> files, ProgressRequestBody.Listener listener) throws Exception {
         OkHttpClient client = new OkHttpClient();
 
         MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -33,8 +33,8 @@ public class MultipartRequest {
         ProgressRequestBody progressRequestBody = new ProgressRequestBody(requestBody, listener);
 
         Request.Builder requestBuilder = new Request.Builder()
-                .url(url)
-                .post(progressRequestBody);
+                .method(method, progressRequestBody)
+                .url(url);
 
         requestBuilder = fullfillHeaders(requestBuilder, headers);
         Request request = requestBuilder.build();

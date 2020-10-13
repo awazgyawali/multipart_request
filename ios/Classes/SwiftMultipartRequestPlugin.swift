@@ -20,9 +20,11 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
             if let myArgs = args as? [String: Any],
                 let files = myArgs["files"] as? [[String: String]],
                 let url = myArgs["url"] as? String,
+                let method = myArgs["method"] as? String,
                 let headers = myArgs["headers"] as? [String: String],
                 let fields = myArgs["fields"] as? [String: String] {
-                uploadFile(files: files, url: url, headers: headers, fields: fields, result: result)
+               
+                uploadFile(files: files, url: url, method: method, headers: headers, fields: fields, result: result)
             }
         default:
             result(FlutterMethodNotImplemented)
@@ -56,11 +58,16 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
         }
     }
 
-    private func uploadFile(files: [[String: String]], url: String, headers: [String: String], fields: [String: String], result _: @escaping FlutterResult) {
+    private func uploadFile(files: [[String: String]], url: String, method: String, headers: [String: String], fields: [String: String], result _: @escaping FlutterResult) {
+        //Manually mapping
+        var httpMethod = HTTPMethod.post
+        if (method == "PUT") {
+            httpMethod = HTTPMethod.put
+        }
         Alamofire.upload(multipartFormData: { multipartFormData in
             self.fillFiles(multipartFormData, files: files)
             self.fillFields(multipartFormData, fields: fields)
-        }, to: url, headers: headers, encodingCompletion: { encodingResult in
+        }, to: url, method: httpMethod, headers: headers, encodingCompletion: { encodingResult in
             switch encodingResult {
             case let .failure(error):
                 SwiftMultipartRequestPlugin.channel?.invokeMethod("error", arguments: "")
