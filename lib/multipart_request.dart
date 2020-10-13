@@ -11,6 +11,11 @@ class MultipartRequest {
   var _files = [];
   String _method = "POST"; //POST or PUT
 
+  ///Print test string, no actual use
+  example() {
+    print("This is a test print");
+  }
+
   setMethodPost() {
     this._method = "POST";
   }
