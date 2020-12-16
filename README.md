@@ -4,7 +4,10 @@ A flutter plugin to send a multipart request with get progress event.
 Works on both Android and iOS
 
 ## Example
+
     var request = MultipartRequest();
+
+    request.setMethodPut() //default method is POST
 
     request.addFile("image", imagePath);
 

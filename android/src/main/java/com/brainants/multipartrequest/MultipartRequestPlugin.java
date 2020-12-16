@@ -31,6 +31,7 @@ public class MultipartRequestPlugin implements MethodCallHandler {
         if (call.method.equals("multipartRequest")) {
             final Map<String, Object> arguments = call.arguments();
             final String url = (String) arguments.get("url");
+            final String method = (String) arguments.get("method");
             final Map<String, String> headers = (Map<String, String>) arguments.get("headers");
             final Map<String, String> fields = (Map<String, String>) arguments.get("fields");
             final ArrayList<Object> files = (ArrayList<Object>) arguments.get("files");
@@ -40,7 +41,7 @@ public class MultipartRequestPlugin implements MethodCallHandler {
                 @Override
                 protected Void doInBackground(Void... voids) {
                     try {
-                        new MultipartRequest().sendMultipartRequest(url, headers, fields, files, new ProgressRequestBody.Listener() {
+                        new MultipartRequest().sendMultipartRequest(url, method, headers, fields, files, new ProgressRequestBody.Listener() {
                             @Override
                             public void onProgress(final int progress) {
                                 activity.runOnUiThread(new Runnable() {
