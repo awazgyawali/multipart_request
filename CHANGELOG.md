@@ -1,3 +1,11 @@
+## 0.3.1
+
+- Increased android sdk version and android x migration
+
+## 0.3.0
+
+- Support for iOS
+
 ## 0.2.0
 
 - n core code on UI thread
