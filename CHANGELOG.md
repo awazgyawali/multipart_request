@@ -1,3 +1,6 @@
+## 0.3.2
+
+- Added fix for big file upload on iOS (Thank you @BEARlogin for the PR)
 ## 0.3.1
 
 - Increased android sdk version and android x migration
