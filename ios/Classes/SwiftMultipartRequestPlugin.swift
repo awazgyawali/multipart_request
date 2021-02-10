@@ -31,15 +31,8 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
 
     private func fillFiles(_ multipartFormData: MultipartFormData, files: [[String: String]]) {
         for file in files {
-            var fileData: Data?
-            do {
-                fileData = try Data(contentsOf: URL(fileURLWithPath: file["path"]!), options: Data.ReadingOptions.alwaysMapped)
-            } catch _ {
-                fileData = nil
-                return
-            }
             let filePathArray = file["path"]!.split(separator: "/").map(String.init)
-            multipartFormData.append(fileData!, withName: file["field"]!, fileName: filePathArray.last!, mimeType: "")
+            multipartFormData.append(URL(fileURLWithPath: file["path"]!), withName: file["field"]!, fileName: filePathArray.last!, mimeType: "")
         }
     }
 
@@ -49,10 +42,21 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
         }
     }
 
-    fileprivate func onSuccess(_ response: DataResponse<Any>) {
+    private func onSuccess(_ response: DataResponse<Any>) {
         if let data = response.data {
             let json = String(data: data, encoding: String.Encoding.utf8)
             SwiftMultipartRequestPlugin.channel?.invokeMethod("complete", arguments: json)
+        }
+    }
+
+    private func uploadHandle(upload: UploadRequest) {
+        upload.validate()
+        upload.responseJSON { response in
+            self.onSuccess(response)
+        }
+        upload.uploadProgress { progress in
+            let percents = Int(round(progress.fractionCompleted * 100))
+            SwiftMultipartRequestPlugin.channel?.invokeMethod("progress", arguments: String(percents))
         }
     }
 
@@ -63,21 +67,11 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
         }, to: url, headers: headers, encodingCompletion: { encodingResult in
             switch encodingResult {
             case let .failure(error):
-                SwiftMultipartRequestPlugin.channel?.invokeMethod("error", arguments: "")
-            case .success(request: let upload, streamingFromDisk: false, streamFileURL: let streamFileURL):
-                upload.validate()
-                upload.responseJSON { response in
-                    self.onSuccess(response)
-                }
-                upload.uploadProgress(closure: { progress in
-                    let percents = Int(round(progress.fractionCompleted * 100))
-                    SwiftMultipartRequestPlugin.channel?.invokeMethod("progress", arguments: String(percents))
-                })
+                SwiftMultipartRequestPlugin.channel?.invokeMethod("error", arguments: String(error.localizedDescription))
             case .success(request: let upload, streamingFromDisk: true, streamFileURL: let streamFileURL):
-                upload.validate()
-                upload.responseJSON { response in
-                    self.onSuccess(response)
-                }
+                self.uploadHandle(upload: upload)
+            case .success(request: let upload, streamingFromDisk: false, streamFileURL: let streamFileURL):
+                self.uploadHandle(upload: upload)
             }
         })
     }
