@@ -1,0 +1,36 @@
+PODS:
+  - Alamofire (4.9.1)
+  - Flutter (1.0.0)
+  - image_picker_ios (0.0.1):
+    - Flutter
+  - multipart_request_null_safety (0.3.3):
+    - Alamofire (= 4.9.1)
+    - Flutter
+
+DEPENDENCIES:
+  - Alamofire (= 4.9.1)
+  - Flutter (from `Flutter`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - multipart_request_null_safety (from `.symlinks/plugins/multipart_request_null_safety/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
+  multipart_request_null_safety:
+    :path: ".symlinks/plugins/multipart_request_null_safety/ios"
+
+SPEC CHECKSUMS:
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
+  multipart_request_null_safety: 0aba5a671cbdcb3064aa22a4aad6b0083211dbd2
+
+PODFILE CHECKSUM: be84b78c929c53e10425d366fbee7aaf017246fa
+
+COCOAPODS: 1.11.3

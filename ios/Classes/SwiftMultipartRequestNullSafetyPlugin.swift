@@ -2,14 +2,17 @@ import Alamofire
 import Flutter
 import UIKit
 
-public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
-    static var channel: FlutterMethodChannel?
 
+public class SwiftMultipartRequestNullSafetyPlugin: NSObject, FlutterPlugin {
+  static var channel: FlutterMethodChannel?
+    
+    
     public static func register(with registrar: FlutterPluginRegistrar) {
-        channel = FlutterMethodChannel(name: "multipart_request", binaryMessenger: registrar.messenger())
-        let instance = SwiftMultipartRequestPlugin()
+        channel = FlutterMethodChannel(name: "multipart_request_null_safety", binaryMessenger: registrar.messenger())
+        let instance = SwiftMultipartRequestNullSafetyPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel!)
     }
+
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
@@ -45,7 +48,7 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
     private func onSuccess(_ response: DataResponse<Any>) {
         if let data = response.data {
             let json = String(data: data, encoding: String.Encoding.utf8)
-            SwiftMultipartRequestPlugin.channel?.invokeMethod("complete", arguments: json)
+            SwiftMultipartRequestNullSafetyPlugin.channel?.invokeMethod("complete", arguments: json)
         }
     }
 
@@ -56,7 +59,7 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
         }
         upload.uploadProgress { progress in
             let percents = Int(round(progress.fractionCompleted * 100))
-            SwiftMultipartRequestPlugin.channel?.invokeMethod("progress", arguments: String(percents))
+            SwiftMultipartRequestNullSafetyPlugin.channel?.invokeMethod("progress", arguments: String(percents))
         }
     }
 
@@ -67,7 +70,7 @@ public class SwiftMultipartRequestPlugin: NSObject, FlutterPlugin {
         }, to: url, headers: headers, encodingCompletion: { encodingResult in
             switch encodingResult {
             case let .failure(error):
-                SwiftMultipartRequestPlugin.channel?.invokeMethod("error", arguments: String(error.localizedDescription))
+                SwiftMultipartRequestNullSafetyPlugin.channel?.invokeMethod("error", arguments: String(error.localizedDescription))
             case .success(request: let upload, streamingFromDisk: true, streamFileURL: let streamFileURL):
                 self.uploadHandle(upload: upload)
             case .success(request: let upload, streamingFromDisk: false, streamFileURL: let streamFileURL):
