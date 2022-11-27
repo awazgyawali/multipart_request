@@ -1,41 +1,57 @@
+import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-
 import 'package:image_picker/image_picker.dart';
-import 'package:multipart_request/multipart_request.dart';
+import 'package:flutter/services.dart';
+import 'package:multipart_request_null_safety/multipart_request_null_safety.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   String imagePath = "";
+  var upload_progress;
+  final ImagePicker picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Multi Request Plugin example app'),
         ),
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              FlatButton(
-                child: Text("Pick an image"),
+              if(upload_progress != null)
+                Text("${upload_progress}%", style: TextStyle(color: Colors.green, fontSize: 15)),
+            MaterialButton(
                 onPressed: () async {
-                  File image =
-                      await ImagePicker.pickImage(source: ImageSource.gallery);
-                  imagePath = image.path;
+                PickedFile? image = await picker.getImage(source: ImageSource.gallery);
+                  if(image != null)
+                  {
+                    imagePath = image.path;
+                  }
                 },
+                child: const Text("Pick an image")
               ),
-              FlatButton(
-                child: Text("Call multipart request"),
+              MaterialButton(
+                child: const Text("Call multipart request"),
                 onPressed: () {
                   sendRequest();
                 },
@@ -49,22 +65,28 @@ class _MyAppState extends State<MyApp> {
 
   void sendRequest() {
     var request = MultipartRequest();
-
-    request.setUrl("https://b804ca15.ngrok.io/images");
-    request.addFile("image", imagePath);
-
+    var url = "THE URL TO THE SERVER";
+    request.setUrl(url);
+    request.addFile("photo", imagePath);
     Response response = request.send();
 
     response.onError = () {
-      print("Error");
+      setState(() {
+        upload_progress = "something went wrong while uploading\ncheck your internet connection!";
+      });
     };
 
     response.onComplete = (response) {
-      print(response);
+      setState(() {
+        upload_progress = null;
+      });
     };
 
     response.progress.listen((int progress) {
-      print("progress from response object " + progress.toString());
+      setState(() {
+        upload_progress = progress;
+      });
     });
+
   }
 }

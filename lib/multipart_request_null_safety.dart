@@ -1,12 +1,12 @@
+
+import 'multipart_request_null_safety_platform_interface.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
-
 class MultipartRequest {
-  static const MethodChannel _channel =
-      const MethodChannel('multipart_request');
+  static const MethodChannel _channel = const MethodChannel('multipart_request_null_safety');
 
-  String _url;
+  String _url = "";
   var _headers = {}, _fields = {};
   var _files = [];
 
@@ -42,6 +42,7 @@ class MultipartRequest {
       "files": _files,
     };
 
+
     _channel.invokeMethod('multipartRequest', finalBlock);
     var controller = StreamController<int>();
 
@@ -62,10 +63,10 @@ class MultipartRequest {
         case "error":
           response.onError();
           controller.close();
-
           break;
         default:
       }
+      return handler.arguments;
     });
 
     return response;
@@ -73,6 +74,6 @@ class MultipartRequest {
 }
 
 class Response {
-  Stream<int> progress;
-  Function onComplete, onError;
+  var progress;
+  var onComplete, onError;
 }
